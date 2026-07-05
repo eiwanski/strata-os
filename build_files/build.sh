@@ -13,7 +13,15 @@ cp -avf "/ctx/system_files"/. /
 # https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/43/x86_64/repoview/index.html&protocol=https&redirect=1
 
 # this installs a package from fedora repos
-dnf5 install -y tmux
+FEDORA_PACKAGES=(
+    byobu
+    keychain
+    tmux
+    wireshark
+    wireshark-cli
+)
+
+dnf5 install -y "${FEDORA_PACKAGES[@]}"
 
 # Use a COPR Example:
 #
@@ -22,6 +30,11 @@ dnf5 install -y tmux
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
 
+# install globalprotect-openconnect
+curl -s -o /tmp/globalprotect-openconnect-latest.x86_64.rpm -L $(curl -s https://api.github.com/repos/yuezk/GlobalProtect-openconnect/releases/latest | jq -r '.assets[] | select(.name | contains ("x86_64.rpm")) | .browser_download_url' | head -n 1)
+rpm-ostree install /tmp/globalprotect-openconnect-latest.x86_64.rpm
+rm -r -f /tmp/globalprotect-openconnect-latest.x86_64.rpm
+
 #### Example for enabling a System Unit File
 
-systemctl enable podman.socket
+#systemctl enable podman.socket
